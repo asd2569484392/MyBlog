@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.yangchaojie.dao.AccountDAO">
+	<!-- 登录查询 -->
+	<select id="LoginVerify" resultType="xyz.yangchaojie.entity.Account">
+		SELECT username,password,role FROM account WHERE username = #{username} AND password = #{password};
+	</select>
+</mapper>

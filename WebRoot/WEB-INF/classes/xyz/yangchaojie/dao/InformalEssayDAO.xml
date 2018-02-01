@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.yangchaojie.dao.InformalEssayDAO">
+	<!-- 添加随笔 -->
+	<insert id="insertNewInformalEssay" parameterType="xyz.yangchaojie.entity.InformalEssay">
+		INSERT INTO
+		informalessay VALUES(0,#{informalessay_title},#{informalessay_intro},
+		#{informalessay_content},#{informalessay_author},#{informalessay_time},#{informalessay_photourl},
+		#{informalessay_keyword});
+	</insert>
+	<!-- 获取最新三条随笔集合 -->
+	<select id="getThreeRecentInformalEssays" resultType="xyz.yangchaojie.entity.InformalEssay">
+		SELECT
+		id,informalessay_title,informalessay_intro,
+		informalessay_author,informalessay_time,informalessay_photourl,informalessay_keyword
+		from
+		informalessay ORDER BY id DESC LIMIT 0,3;
+	</select>
+	<!-- 随笔分页 -->
+	<select id="getInformalEssayList_Page" resultType="xyz.yangchaojie.entity.InformalEssay">
+		SELECT
+		id,informalessay_title,informalessay_intro,
+		informalessay_author,informalessay_time,informalessay_photourl,informalessay_keyword
+		FROM informalessay ORDER BY id DESC LIMIT #{pageNow},#{size};
+	</select>
+	<!-- 获取随笔总数 -->
+	<select id="getInformalEssaySum" resultType="int">
+		SELECT COUNT(*) FROM
+		informalessay;
+	</select>
+	<!-- 根据id获取随笔 -->
+	<select id="getInformalEssay" parameterType="int"
+		resultType="xyz.yangchaojie.entity.InformalEssay">
+		SELECT
+		id,informalessay_title,informalessay_intro,informalessay_content,informalessay_photourl,informalessay_keyword
+		,informalessay_time FROM informalessay WHERE id = #{id}
+	</select>
+	<!-- 更新随笔 -->
+	<update id="updateInformalEssay" parameterType="xyz.yangchaojie.entity.InformalEssay">
+		UPDATE
+		informalessay SET informalessay_title =
+		#{informalessay_title},informalessay_intro = #{informalessay_intro},
+		informalessay_content = #{informalessay_content},informalessay_keyword
+		= #{informalessay_keyword} WHERE id = #{id}
+	</update>
+	<!-- 删除随笔 -->
+	<delete id="removeInformalEssay" parameterType="int">
+		DELETE FROM
+		informalessay WHERE id = #{id}
+	</delete>
+	<!-- 查询随笔封面图片名称 -->
+	<select id="getInformalEssayPhotoName" parameterType="int"
+		resultType="String">
+		SELECT informalessay_photourl FROM informalessay WHERE id =
+		#{id}
+	</select>
+	<!-- 根据标签查询 -->
+	<select id="getInformalEssayByTag" resultType="xyz.yangchaojie.entity.InformalEssay">
+		SELECT
+		informalessay_title,informalessay_intro,informalessay_keyword,informalessay_time
+		FROM informalessay WHERE informalessay_keyword = #{tag} ORDER BY id
+		DESC LIMIT #{pageNow},#{size};
+	</select>
+	<!-- 随机获取随笔 -->
+	<select id="getRandomInformalEssay" resultType="xyz.yangchaojie.entity.InformalEssay">
+
+		SELECT id,informalessay_photourl FROM informalessay WHERE id >= ((SELECT MAX(id) FROM
+		informalessay)-(SELECT MIN(id) FROM informalessay)) * RAND() + (SELECT
+		MIN(id) FROM informalessay) LIMIT 1
+
+	</select>
+
+</mapper>

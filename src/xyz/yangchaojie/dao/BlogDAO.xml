@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.yangchaojie.dao.BlogDAO">
+	<!-- 查询博客总数 -->
+	<select id="getBlogSum" resultType="int">
+		SELECT COUNT(*) FROM blog;
+	</select>
+	<!-- 返回博客倒序截取ID最大的三条数据集合 -->
+	<select id="getThreeRecentBlogs" resultType="xyz.yangchaojie.entity.Blog">
+		SELECT
+		id,blog_title,blog_intro,blog_author,blog_photourl,blog_keyword,blog_time
+		from
+		blog ORDER BY id DESC LIMIT 0,3;
+	</select>
+	<!-- 添加博客 -->
+	<insert id="insertNewBlog" parameterType="xyz.yangchaojie.entity.Blog">
+		INSERT INTO blog
+		VALUES(#{id},#{blog_title},#{blog_intro},
+		#{blog_content},#{blog_author},#{blog_time},#{blog_photourl},
+		#{blog_keyword});
+	</insert>
+	<!-- 获取当前分页博客集合 -->
+	<select id="getBlogList_Page" resultType="xyz.yangchaojie.entity.Blog">
+		SELECT
+		id,blog_title,blog_intro,blog_author,blog_photourl,blog_keyword,blog_time
+		FROM blog ORDER BY id DESC LIMIT #{pageNow},#{size};
+	</select>
+	<!-- 根据id查询博客 -->
+	<select id="getBlog" parameterType="int" resultType="xyz.yangchaojie.entity.Blog">
+		SELECT
+		id,blog_title,blog_intro,blog_content,blog_keyword,blog_photourl,blog_time from blog WHERE id
+		= #{id};
+	</select>
+	<!-- 更新博客 -->
+	<update id="updateBlog" parameterType="xyz.yangchaojie.entity.Blog">
+		UPDATE blog SET blog_title
+		= #{blog_title},blog_intro=#{blog_intro},blog_content =
+		#{blog_content},blog_keyword =
+		#{blog_keyword} WHERE id = #{id}
+	</update>
+	<!-- 删除博客 -->
+	<delete id="removeBlog" parameterType="int">
+		DELETE FROM blog WHERE id
+		= #{id}
+	</delete>
+	<!-- 根据id获取文章 -->
+	<select id="getBlogPhotoName" parameterType="int" resultType="String">
+		SELECT blog_photourl FROM blog WHERE id = #{id}
+	</select>
+	<!-- 根据标签获取博客集合 -->
+	<select id="getBlogByTag" resultType="xyz.yangchaojie.entity.Blog">
+		SELECT
+		id,blog_title,blog_intro,blog_author,blog_photourl,blog_keyword,blog_time
+		FROM blog WHERE blog_keyword = #{tag} ORDER BY id DESC LIMIT
+		#{pageNow},#{size};
+	</select>
+	<!-- 随机获取博客 -->
+	<select id="getRnadomBlog" resultType="xyz.yangchaojie.entity.Blog">
+		SELECT id,blog_photourl FROM blog WHERE id >= ((SELECT MAX(id) FROM blog)-(SELECT MIN(id)
+		FROM blog)) * RAND() + (SELECT MIN(id) FROM blog) LIMIT 1
+	</select>
+</mapper>

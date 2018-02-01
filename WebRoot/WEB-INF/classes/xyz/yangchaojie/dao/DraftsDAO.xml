@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xyz.yangchaojie.dao.DraftsDAO">
+	<!-- 查询草稿数量 -->
+	<select id="getDraftsSum" resultType="int">
+		SELECT COUNT(*) FROM
+		drafts;
+	</select>
+	<!-- 获取最新的三条数据 -->
+	<select id="getThreeRecentDrafts" resultType="xyz.yangchaojie.entity.Drafts">
+		SELECT
+		id,draft_title,draft_intro,draft_author,draft_photourl,draft_keyword,draft_time,draft_type
+		from drafts ORDER BY id DESC LIMIT 0,3;
+	</select>
+	<!-- 草稿分页 -->
+	<select id="getDraftsList_Page" resultType="xyz.yangchaojie.entity.Drafts">
+		SELECT
+		id,draft_title,draft_intro,draft_author,draft_photourl,draft_keyword,draft_time,draft_type
+		FROM drafts ORDER BY id DESC LIMIT #{pageNow},#{size};
+	</select>
+	<!-- 添加草稿 -->
+	<insert id="insertDraft" parameterType="xyz.yangchaojie.entity.Drafts">
+		INSERT INTO drafts
+		VALUES(#{id},#{draft_title},#{draft_intro},
+		#{draft_content},#{draft_author},#{draft_time},#{draft_photoURL},
+		#{draft_keyword},#{draft_type});
+	</insert>
+	<!-- 获取草稿分分页集合By类型 -->
+	<select id="getDraftsList_PageByType" resultType="xyz.yangchaojie.entity.Drafts">
+		SELECT *FROM
+		drafts WHERE drafts.draft_type = #{type} ORDER BY id DESC LIMIT
+		#{pageNow},#{size}
+	</select>
+	<!-- 获取草稿 -->
+	<select id="getDraft" parameterType="int"
+		resultType="xyz.yangchaojie.entity.Drafts">
+		SELECT
+		id,draft_title,draft_intro,draft_content,draft_keyword FROM drafts
+		WHERE id = #{id}
+	</select>
+	<!-- 更新草稿 -->
+	<update id="updateDraft" parameterType="xyz.yangchaojie.entity.Drafts">
+		UPDATE drafts SET
+		draft_title = #{draft_title},draft_intro =
+		#{draft_intro},draft_content =
+		#{draft_content},draft_keyword =
+		#{draft_keyword} WHERE id = #{id}
+	</update>
+	<!-- 删除草稿 -->
+	<delete id="removeDraft" parameterType="int">
+		DELETE FROM drafts WHERE id = #{id}
+	</delete>
+	<!-- 获取类型 -->
+	<select id="getTypeAndPhotoName" resultType="xyz.yangchaojie.entity.Drafts" parameterType="int">
+		SELECT draft_photoURL,draft_type FROM drafts WHERE id = #{id}
+	</select>
+</mapper>

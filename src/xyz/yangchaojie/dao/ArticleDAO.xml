@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.yangchaojie.dao.ArticleDAO">
+	<!-- 查询文章总数 -->
+	<select id="getArticleSum" resultType="int">
+		SELECT COUNT(*) FROM
+		article;
+	</select>
+	<!-- 添加文章 -->
+	<insert id="insertNewArticle" parameterType="xyz.yangchaojie.entity.Article">
+		INSERT INTO article
+		VALUES(0,#{article_title},#{article_intro}
+		,#{article_content},#{article_author},#{article_time},
+		#{article_photoURL},#{article_keyword});
+	</insert>
+	<!-- 删除文章 -->
+	<delete id="removeArticle" parameterType="int">
+		DELETE FROM article
+		WHERE id = #{id};
+	</delete>
+	<!-- 更新 -->
+	<update id="UpdataArticle" parameterType="xyz.yangchaojie.entity.Article">
+		UPDATE article SET
+		article_title = #{article_title},article_intro =
+		#{article_intro},article_content = #{article_content}
+		,article_keyword = #{article_keyword}
+		WHERE id =
+		#{id};
+	</update>
+	<!-- 返回最后三条文章 -->
+	<select id="getThreeRecentArticles" resultType="xyz.yangchaojie.entity.Article">
+		SELECT
+		id,article_title,article_intro,article_author,article_photourl,article_keyword,article_time
+		from
+		article ORDER BY id DESC LIMIT 0,3;
+	</select>
+	<!-- 獲取分頁集合 -->
+	<select id="getArticleList_Page" resultType="xyz.yangchaojie.entity.Article">
+		SELECT
+		id,article_title,article_intro,article_author,article_keyword,article_time
+		FROM article ORDER BY id DESC LIMIT #{pageNow},#{size};
+	</select>
+	<!-- 根据id查询文章 -->
+	<select id="getArticleById" parameterType="int" resultType="xyz.yangchaojie.entity.Article">
+		SELECT 
+		id,article_title,article_intro,article_content,article_keyword,article_photourl,article_time
+		FROM article where id = #{id}
+	</select>
+	<!-- 获取封面名称 -->
+	<select id="getArticlePhotoName" parameterType="int" resultType="String">
+		SELECT  article_photourl FROM article WHERE id = #{id}
+	</select>
+	<!-- 根据标签获取文章集合 -->
+	<select id="getArticleListByTag" resultType="xyz.yangchaojie.entity.Article">
+		SELECT
+		id,article_title,article_intro,article_author,article_keyword,article_time
+		FROM article WHERE article_keyword = #{tag} ORDER BY id DESC LIMIT #{pageNow},#{size};
+	</select>
+	<select id="getRandomArticle" resultType="xyz.yangchaojie.entity.Article">
+		SELECT id,article_photourl FROM article WHERE id >= ((SELECT MAX(id) FROM article)-(SELECT MIN(id) FROM article)) * RAND() + (SELECT MIN(id) FROM article)  LIMIT 1
+	</select>
+</mapper>
